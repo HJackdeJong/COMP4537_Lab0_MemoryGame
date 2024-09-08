@@ -10,6 +10,35 @@ function generateColour() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 }
 
+class GamePromptHandler {
+  constructor(input) {
+    this.gamePromptContainer = document.getElementById("buttonPrompt");
+    this.gamePrompt = document.getElementById("buttonText");
+    this.userButtonsInput = document.getElementById("numButtons");
+    this.startButton = document.getElementById("startGame");
+
+    this.promptMessage = messages.gamePromptMessage;
+    this.buttonText = messages.startGameButtonMessage;
+  }
+
+  startGameCallback(startGame) {
+    this.startButton.addEventListener(() => startGame);
+  }
+
+  getButtonCount() {
+    return userButtonsInput.value;
+  }
+
+  isButtonCountValid(buttonCount) {
+    if ((this.numberOfButtons < 7) & (this.numberOfButtons > 3)) {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+}
+
 class Button {
   constructor(colour, number) {
     this.colourButton = document.createElement("button");
@@ -20,6 +49,7 @@ class Button {
     this.colourButton.style.width = "10em";
     this.colourButton.textContent = number;
     this.colourButton.style.left = `${(this.buttonNumber - 1) * 10}em`;
+    this.handleClick = null;
   }
 
   display(elementName) {
@@ -45,9 +75,16 @@ class Button {
   }
 
   makeSelectable(gameCallBack) {
-    this.colourButton.addEventListener("click", () => {
+    this.handleClick = () => {
       gameCallBack(this.buttonNumber);
-    });
+    };
+
+    this.colourButton.addEventListener("click", this.handleClick);
+  }
+
+  disableButton() {
+    if (this.handleClick)
+      this.colourButton.removeEventListener("click", this.handleClick);
   }
 
   revealNumber() {
@@ -56,30 +93,30 @@ class Button {
 }
 
 class ButtonClickerGame {
-  constructor() {
+  constructor(handler) {
     this.buttons = [];
     this.numberOfButtons = 0;
     this.numberOfCorrectClicks = 0;
+    this.userPromptHandler = handler;
   }
 
   initializeGame() {
-    document
-      .getElementById("startGame")
-      .addEventListener("click", () => this.startGame());
+    document.getElementById("startGame");
+    // .addEventListener("click", () => this.startGame());
     hideOverlay();
   }
 
   startGame() {
     this.clearPreviousGame();
-    const inputValue = document.getElementById("numButtons").value;
-    this.numberOfButtons = inputValue;
-    if ((this.numberOfButtons < 8) & (this.numberOfButtons > 2)) {
-      this.createButtons(this.numberOfButtons);
-      this.displayButtons();
-      setTimeout(() => {
-        this.runGame(0);
-      }, this.numberOfButtons * 1000);
+    this.numberOfButtons = this.handler.getButtonCount();
+    if (!this.handler.isButtonCountValid){
+      showOverlay(messages.wrongNumberOfButtonsMessage);
     }
+    this.createButtons(this.numberOfButtons);
+    this.displayButtons();
+    setTimeout(() => {
+      this.runGame(0);
+    }, this.numberOfButtons * 1000);
   }
 
   clearPreviousGame() {
@@ -187,19 +224,24 @@ class ButtonClickerGame {
 //
 // 5) A new row when the buttons are too large
 
+//script code to start the game with dependency injection
+
+const userPromter = new GamePromptHandler();
+const colourizer = new ColourGenerator();
+const buttonCreator = new ButtonGenerator();
 const game = new ButtonClickerGame();
 game.initializeGame();
 
 function showOverlay(message) {
-  const overlay = document.getElementById('overlay');
-  const overlayMessage = document.getElementById('overlayMessage');
+  const overlay = document.getElementById("overlay");
+  const overlayMessage = document.getElementById("overlayMessage");
   overlayMessage.textContent = message;
-  overlay.classList.remove('hidden'); // Remove hidden class to show overlay
-  overlay.classList.add('visible');   // Optional, you can add visible class
+  overlay.classList.remove("hidden"); // Remove hidden class to show overlay
+  overlay.classList.add("visible"); // Optional, you can add visible class
 }
 
 function hideOverlay() {
-  const overlay = document.getElementById('overlay');
-  overlay.classList.add('hidden');    // Add hidden class to hide overlay
-  overlay.classList.remove('visible'); // Optional, remove visible class
+  const overlay = document.getElementById("overlay");
+  overlay.classList.add("hidden"); // Add hidden class to hide overlay
+  overlay.classList.remove("visible"); // Optional, remove visible class
 }
