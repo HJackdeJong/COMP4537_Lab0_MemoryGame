@@ -114,7 +114,7 @@ class ButtonClickerGame {
   startGame() {
     this.clearPreviousGame();
     this.numberOfButtons = this.promptHandler.getButtonCount();
-    if (!this.promptHandler.isButtonCountValid()) {
+    if (!this.promptHandler.isButtonCountValid(this.numberOfButtons)) {
       showOverlay(messages.wrongNumberOfButtonsMessage);
     } else {
       this.createButtons(this.numberOfButtons);
