@@ -27,11 +27,11 @@ class GamePromptHandler {
   }
 
   addStartGameCallback(startGame) {
-    this.startButton.addEventListener(() => startGame);
+    this.startButton.addEventListener("click", startGame);
   }
 
   getButtonCount() {
-    return userButtonsInput.value;
+    return this.userButtonsInput.value;
   }
 
   isButtonCountValid(buttonCount) {
@@ -100,26 +100,29 @@ class ButtonClickerGame {
     this.buttons = [];
     this.numberOfButtons = 0;
     this.numberOfCorrectClicks = 0;
-    this.userPromptHandler = handler;
+    this.promptHandler = handler;
   }
 
   initializeGame() {
     hideOverlay();
-    this.handler.addStartGameCallback();
-    this.handler.displayPrompt();
+    this.promptHandler.addStartGameCallback(() => {
+      this.startGame();
+    });
+    this.promptHandler.displayPrompt();
   }
 
   startGame() {
     this.clearPreviousGame();
-    this.numberOfButtons = this.handler.getButtonCount();
-    if (!this.handler.isButtonCountValid) {
+    this.numberOfButtons = this.promptHandler.getButtonCount();
+    if (!this.promptHandler.isButtonCountValid()) {
       showOverlay(messages.wrongNumberOfButtonsMessage);
+    } else {
+      this.createButtons(this.numberOfButtons);
+      this.displayButtons();
+      setTimeout(() => {
+        this.runGame(0);
+      }, this.numberOfButtons * 1000);
     }
-    this.createButtons(this.numberOfButtons);
-    this.displayButtons();
-    setTimeout(() => {
-      this.runGame(0);
-    }, this.numberOfButtons * 1000);
   }
 
   clearPreviousGame() {
@@ -244,7 +247,7 @@ game.initializeGame();
 function showOverlay(message) {
   const overlay = document.getElementById("overlay");
   const overlayMessage = document.getElementById("overlayMessage");
-  overlayMessage.textContent = message;
+  overlayMessage.innerHTML = message;
   overlay.classList.remove("hidden"); // Remove hidden class to show overlay
   overlay.classList.add("visible"); // Optional, you can add visible class
 }
