@@ -11,7 +11,7 @@ function generateColour() {
 }
 
 class GamePromptHandler {
-  constructor(input) {
+  constructor() {
     this.gamePromptContainer = document.getElementById("buttonPrompt");
     this.gamePrompt = document.getElementById("buttonText");
     this.userButtonsInput = document.getElementById("numButtons");
@@ -21,7 +21,12 @@ class GamePromptHandler {
     this.buttonText = messages.startGameButtonMessage;
   }
 
-  startGameCallback(startGame) {
+  displayPrompt() {
+    this.gamePrompt.textContent = this.promptMessage;
+    this.startButton.textContent = this.buttonText;
+  }
+
+  addStartGameCallback(startGame) {
     this.startButton.addEventListener(() => startGame);
   }
 
@@ -30,12 +35,10 @@ class GamePromptHandler {
   }
 
   isButtonCountValid(buttonCount) {
-    if ((this.numberOfButtons < 7) & (this.numberOfButtons > 3)) {
+    if ((buttonCount < 7) & (buttonCount > 3)) {
       return true;
     }
-    else{
-      return false;
-    }
+    return false;
   }
 }
 
@@ -101,15 +104,15 @@ class ButtonClickerGame {
   }
 
   initializeGame() {
-    document.getElementById("startGame");
-    // .addEventListener("click", () => this.startGame());
     hideOverlay();
+    this.handler.addStartGameCallback();
+    this.handler.displayPrompt();
   }
 
   startGame() {
     this.clearPreviousGame();
     this.numberOfButtons = this.handler.getButtonCount();
-    if (!this.handler.isButtonCountValid){
+    if (!this.handler.isButtonCountValid) {
       showOverlay(messages.wrongNumberOfButtonsMessage);
     }
     this.createButtons(this.numberOfButtons);
@@ -195,14 +198,20 @@ class ButtonClickerGame {
   }
 
   gameOver() {
-    console.log("Game Over");
     showOverlay(messages.gameOverMessage);
+    this.disableButtons();
     this.revealNumbers();
   }
 
   revealNumbers() {
     this.buttons.forEach((btn) => {
       btn.revealNumber();
+    });
+  }
+
+  disableButtons() {
+    this.buttons.forEach((btn) => {
+      btn.disableButton();
     });
   }
 
@@ -226,10 +235,10 @@ class ButtonClickerGame {
 
 //script code to start the game with dependency injection
 
-const userPromter = new GamePromptHandler();
-const colourizer = new ColourGenerator();
-const buttonCreator = new ButtonGenerator();
-const game = new ButtonClickerGame();
+const userPrompter = new GamePromptHandler();
+// const colourizer = new ColourGenerator();
+// const buttonCreator = new ButtonGenerator();
+const game = new ButtonClickerGame(userPrompter);
 game.initializeGame();
 
 function showOverlay(message) {
