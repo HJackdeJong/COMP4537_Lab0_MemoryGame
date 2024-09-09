@@ -1,3 +1,6 @@
+// This project was created with the assistance of ChatGPT model 3.5 
+// in editing code and providing feedback
+
 const SCRAMBLE_TIME_INTERVAL = 2000;
 const MINIMUM_BUTTON_COUNT = 3;
 const MAXIMUM_BUTTON_COUNT = 7;
@@ -28,7 +31,9 @@ class GamePromptHandler {
     this.userButtonsInput = document.getElementById(
       elementStrings.numButtonsId
     );
-    this.startButton = document.getElementById(elementStrings.starGameButtonId);
+    this.startButton = document.getElementById(
+      elementStrings.startGameButtonId
+    );
 
     this.promptMessage = messages.gamePromptMessage;
     this.buttonText = messages.startGameButtonMessage;
@@ -76,15 +81,38 @@ class OverlayManager {
   }
 }
 
+class ButtonFactory {
+  createButtons(numberOfButtons, colourRandomizer, width, height, buffer, topOffset) {
+    const buttons = [];
+    for (let i = 0; i < numberOfButtons; i++) {
+      const colour = colourRandomizer.generateColour();
+      const newButton = new Button(
+        colour,
+        i + 1,
+        width,
+        height,
+        buffer,
+        topOffset
+      );
+      buttons.push(newButton);
+    }
+    return buttons;
+  }
+}
+
 class Button {
-  constructor(colour, number) {
+  constructor(colour, number, width, height, buffer, topOffset) {
     this.colourButton = document.createElement("button");
     this.buttonNumber = number;
-    this.colourButton.style.position = "absolute";
     this.colourButton.style.backgroundColor = colour;
+    this.width = width;
+    this.height = height;
+    this.buffer = buffer;
+    this.topOffset = topOffset;
+    this.colourButton.textContent = number;
+    this.colourButton.style.position = "absolute";
     this.colourButton.style.height = `${BUTTON_HEIGHT}em`;
     this.colourButton.style.width = `${BUTTON_WIDTH}em`;
-    this.colourButton.textContent = number;
     this.handleClick = null;
   }
 
@@ -277,7 +305,6 @@ class ButtonClickerGame {
 }
 
 class GameInitializer {
-
   runStandardMemoryGame() {
     const colourRandomizer = new ColourRandomizer();
     const userPrompter = new GamePromptHandler();
