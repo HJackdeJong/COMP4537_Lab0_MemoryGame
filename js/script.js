@@ -4,6 +4,7 @@ const MAXIMUM_BUTTON_COUNT = 7;
 const BUTTON_HEIGHT = 5;
 const BUTTON_WIDTH = 10;
 const BUTTON_BUFFER = 1;
+const BUTTON_TOP_OFFSET = 6;
 const ONE_THOUSAND_MILLISECONDS = 1000;
 const HEXADECIMAL_BASE = 16;
 const MAX_COLOR_VALUE = 16777215;
@@ -84,15 +85,15 @@ class Button {
   }
 
   display(elementName) {
-    if (this.buttonNumber == 1) {
-      this.colourButton.style.left = `${
-        (this.buttonNumber - 1) * BUTTON_WIDTH
-      }em`;
-    } else {
-      this.colourButton.style.left = `${
-        (this.buttonNumber - 1) * (BUTTON_WIDTH + BUTTON_BUFFER)
-      }em`;
-    }
+    const containerWidthInEm = window.innerWidth / parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const buttonsPerRow = Math.floor(containerWidthInEm / (BUTTON_WIDTH + BUTTON_BUFFER));
+  
+    const row = Math.floor((this.buttonNumber - 1) / buttonsPerRow);
+    const column = (this.buttonNumber - 1) % buttonsPerRow;
+  
+    this.colourButton.style.left = `${column * (BUTTON_WIDTH + BUTTON_BUFFER)}em`;
+    this.colourButton.style.top = `${BUTTON_TOP_OFFSET + row * (BUTTON_HEIGHT + BUTTON_BUFFER)}em`;
+  
     document.getElementById(elementName).appendChild(this.colourButton);
   }
 
@@ -182,6 +183,7 @@ class ButtonClickerGame {
   }
 
   displayButtons() {
+
     this.buttons.forEach((btn) => {
       btn.display("buttonContainer");
     });
