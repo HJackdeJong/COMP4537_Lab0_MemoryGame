@@ -1,0 +1,22 @@
+.overlay {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    width: 40%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(100, 100, 100, 0.8);
+    color: white;
+    padding: 20px;
+    z-index: 1000;
+    border-radius: 10px;
+    font-size: 2em;   
+}
+
+.hidden {
+    display: none; /* Use only for hiding */
+}
+
+.visible {
+    display: block; /* Use for showing the overlay */
+}
