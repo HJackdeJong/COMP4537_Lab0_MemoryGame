@@ -42,6 +42,24 @@ class GamePromptHandler {
   }
 }
 
+class OverlayManager {
+  constructor(overlayId, overlayMessageId) {
+    this.overlay = document.getElementById(overlayId);
+    this.overlayMessage = document.getElementById(overlayMessageId);
+  }
+
+  showOverlay(message) {
+    this.overlayMessage.innerHTML = message;
+    this.overlay.classList.remove("hidden"); // Remove hidden class to show overlay
+    this.overlay.classList.add("visible");   // Optional: add visible class
+  }
+
+  hideOverlay() {
+    this.overlay.classList.add("hidden");    // Add hidden class to hide overlay
+    this.overlay.classList.remove("visible"); // Optional: remove visible class
+  }
+}
+
 class Button {
   constructor(colour, number) {
     this.colourButton = document.createElement("button");
@@ -95,34 +113,17 @@ class Button {
   }
 }
 
-class OverlayManager {
-  constructor(overlayId, overlayMessageId) {
-    this.overlay = document.getElementById(overlayId);
-    this.overlayMessage = document.getElementById(overlayMessageId);
-  }
-
-  showOverlay(message) {
-    this.overlayMessage.innerHTML = message;
-    this.overlay.classList.remove("hidden"); // Remove hidden class to show overlay
-    this.overlay.classList.add("visible");   // Optional: add visible class
-  }
-
-  hideOverlay() {
-    this.overlay.classList.add("hidden");    // Add hidden class to hide overlay
-    this.overlay.classList.remove("visible"); // Optional: remove visible class
-  }
-}
-
 class ButtonClickerGame {
-  constructor(handler) {
+  constructor(promptManager, overlayManager) {
     this.buttons = [];
     this.numberOfButtons = 0;
     this.numberOfButtonClicks = 0;
-    this.promptHandler = handler;
+    this.promptHandler = promptManager;
+    this.overlayHandler = overlayManager;
   }
 
   initializeGame() {
-    hideOverlay();
+    this.overlayHandler.hideOverlay();
     this.promptHandler.addStartGameCallback(() => {
       this.startGame();
     });
@@ -133,7 +134,7 @@ class ButtonClickerGame {
     this.clearPreviousGame();
     this.numberOfButtons = this.promptHandler.getButtonCount();
     if (!this.promptHandler.isButtonCountValid(this.numberOfButtons)) {
-      showOverlay(messages.wrongNumberOfButtonsMessage);
+      this.overlayHandler.showOverlay(messages.wrongNumberOfButtonsMessage);
     } else {
       this.createButtons(this.numberOfButtons);
       this.displayButtons();
@@ -144,7 +145,7 @@ class ButtonClickerGame {
   }
 
   clearPreviousGame() {
-    hideOverlay();
+    this.overlayHandler.hideOverlay();
     this.buttons.forEach((btn) => {
       btn.removeElement();
     });
@@ -220,7 +221,7 @@ class ButtonClickerGame {
   }
 
   gameOver() {
-    showOverlay(messages.gameOverMessage);
+    this.overlayHandler.showOverlay(messages.gameOverMessage);
     this.disableButtons();
     this.revealNumbers();
   }
@@ -238,7 +239,7 @@ class ButtonClickerGame {
   }
 
   winGame() {
-    showOverlay(messages.winMessage);
+    this.overlayHandler.showOverlay(messages.winMessage);
   }
 }
 
@@ -262,7 +263,8 @@ class GameInitializer {
 
   runStandardMemoryGame() {
     const userPrompter = new GamePromptHandler();
-    const game = new ButtonClickerGame(userPrompter);
+    const overlayManager = new OverlayManager();
+    const game = new ButtonClickerGame(userPrompter, overlayManager);
     game.initializeGame();
   }
 }
@@ -270,18 +272,3 @@ class GameInitializer {
 //the code to run the game
 const gameInitializer = new GameInitializer();
 gameInitializer.runStandardMemoryGame();
-
-
-function showOverlay(message) {
-  const overlay = document.getElementById("overlay");
-  const overlayMessage = document.getElementById("overlayMessage");
-  overlayMessage.innerHTML = message;
-  overlay.classList.remove("hidden"); // Remove hidden class to show overlay
-  overlay.classList.add("visible"); // Optional, you can add visible class
-}
-
-function hideOverlay() {
-  const overlay = document.getElementById("overlay");
-  overlay.classList.add("hidden"); // Add hidden class to hide overlay
-  overlay.classList.remove("visible"); // Optional, remove visible class
-}
