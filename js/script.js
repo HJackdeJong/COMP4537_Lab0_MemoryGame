@@ -265,16 +265,6 @@ class ButtonClickerGame {
   }
 }
 
-// NOTES:
-//
-// 2) NO STRING LITERALS
-//
-// 3) NO MAGIC NUMBERS
-//
-// 4) REMOVE TEXT LIKE "GO!" from buttons, insert them from javascript if I can
-//
-// 5) A new row when the buttons are too large
-
 class GameInitializer {
   constructor() {
     // You can initialize any default configurations here if needed
