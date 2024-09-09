@@ -99,7 +99,7 @@ class ButtonClickerGame {
   constructor(handler) {
     this.buttons = [];
     this.numberOfButtons = 0;
-    this.numberOfCorrectClicks = 0;
+    this.numberOfButtonClicks = 0;
     this.promptHandler = handler;
   }
 
@@ -130,7 +130,7 @@ class ButtonClickerGame {
     this.buttons.forEach((btn) => {
       btn.removeElement();
     });
-    this.numberOfCorrectClicks = 0;
+    this.numberOfButtonClicks = 0;
     this.buttons.length = 0;
   }
 
@@ -189,14 +189,15 @@ class ButtonClickerGame {
   }
 
   selectButton(buttonNumber) {
-    this.numberOfCorrectClicks++;
-
-    if (this.numberOfCorrectClicks != buttonNumber) {
+    if (buttonNumber == this.numberOfButtonClicks + 1) {
+      this.buttons[buttonNumber - 1].revealNumber();
+      this.numberOfButtonClicks++;
+  
+      if (this.numberOfButtonClicks == this.numberOfButtons) {
+        this.winGame();
+      }
+    } else {
       this.gameOver();
-    }
-
-    if (this.numberOfCorrectClicks == this.numberOfButtons) {
-      this.winGame();
     }
   }
 
@@ -219,7 +220,6 @@ class ButtonClickerGame {
   }
 
   winGame() {
-    console.log("You Win!");
     showOverlay(messages.winMessage);
   }
 }
