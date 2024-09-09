@@ -6,3 +6,15 @@ export const messages = {
   winMessage: "Excellent Memory",
   gameOverMessage: "Wrong Order",
 };
+
+export const elementStrings = {
+  hiddenClass: "hidden",
+  visibleClass: "visible",
+  overlayId: "overlay",
+  overlayMessageId: "overlayMessage",
+  buttonContainerId: "buttonContainer",
+  buttonPromptId: "buttonPrompt",
+  buttonTextId: "buttonText",
+  numButtonsId: "numButtons",
+  startGameButtonId: "startGame",
+};

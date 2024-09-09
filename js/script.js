@@ -9,7 +9,7 @@ const ONE_THOUSAND_MILLISECONDS = 1000;
 const HEXADECIMAL_BASE = 16;
 const MAX_COLOR_VALUE = 16777215;
 
-import { messages } from "../../lang/messages/en/user.js";
+import { messages, elementStrings } from "../../lang/messages/en/user.js";
 
 class ColourRandomizer {
   generateColour() {
@@ -21,10 +21,14 @@ class ColourRandomizer {
 
 class GamePromptHandler {
   constructor() {
-    this.gamePromptContainer = document.getElementById("buttonPrompt");
-    this.gamePrompt = document.getElementById("buttonText");
-    this.userButtonsInput = document.getElementById("numButtons");
-    this.startButton = document.getElementById("startGame");
+    this.gamePromptContainer = document.getElementById(
+      elementStrings.buttonPromptId
+    );
+    this.gamePrompt = document.getElementById(elementStrings.buttonTextId);
+    this.userButtonsInput = document.getElementById(
+      elementStrings.numButtonsId
+    );
+    this.startButton = document.getElementById(elementStrings.starGameButtonId);
 
     this.promptMessage = messages.gamePromptMessage;
     this.buttonText = messages.startGameButtonMessage;
@@ -62,13 +66,13 @@ class OverlayManager {
 
   showOverlay(message) {
     this.overlayMessage.innerHTML = message;
-    this.overlay.classList.remove("hidden"); // Remove hidden class to show overlay
-    this.overlay.classList.add("visible"); // Optional: add visible class
+    this.overlay.classList.remove(elementStrings.hiddenClass);
+    this.overlay.classList.add(elementStrings.visibleClass);
   }
 
   hideOverlay() {
-    this.overlay.classList.add("hidden"); // Add hidden class to hide overlay
-    this.overlay.classList.remove("visible"); // Optional: remove visible class
+    this.overlay.classList.add(elementStrings.hiddenClass);
+    this.overlay.classList.remove(elementStrings.visibleClass);
   }
 }
 
@@ -85,15 +89,23 @@ class Button {
   }
 
   display(elementName) {
-    const containerWidthInEm = window.innerWidth / parseFloat(getComputedStyle(document.documentElement).fontSize);
-    const buttonsPerRow = Math.floor(containerWidthInEm / (BUTTON_WIDTH + BUTTON_BUFFER));
-  
+    const containerWidthInEm =
+      window.innerWidth /
+      parseFloat(getComputedStyle(document.documentElement).fontSize);
+    const buttonsPerRow = Math.floor(
+      containerWidthInEm / (BUTTON_WIDTH + BUTTON_BUFFER)
+    );
+
     const row = Math.floor((this.buttonNumber - 1) / buttonsPerRow);
     const column = (this.buttonNumber - 1) % buttonsPerRow;
-  
-    this.colourButton.style.left = `${column * (BUTTON_WIDTH + BUTTON_BUFFER)}em`;
-    this.colourButton.style.top = `${BUTTON_TOP_OFFSET + row * (BUTTON_HEIGHT + BUTTON_BUFFER)}em`;
-  
+
+    this.colourButton.style.left = `${
+      column * (BUTTON_WIDTH + BUTTON_BUFFER)
+    }em`;
+    this.colourButton.style.top = `${
+      BUTTON_TOP_OFFSET + row * (BUTTON_HEIGHT + BUTTON_BUFFER)
+    }em`;
+
     document.getElementById(elementName).appendChild(this.colourButton);
   }
 
@@ -183,9 +195,8 @@ class ButtonClickerGame {
   }
 
   displayButtons() {
-
     this.buttons.forEach((btn) => {
-      btn.display("buttonContainer");
+      btn.display(elementStrings.buttonContainerId);
     });
   }
 
@@ -266,14 +277,14 @@ class ButtonClickerGame {
 }
 
 class GameInitializer {
-  constructor() {
-    // You can initialize any default configurations here if needed
-  }
 
   runStandardMemoryGame() {
     const colourRandomizer = new ColourRandomizer();
     const userPrompter = new GamePromptHandler();
-    const overlayManager = new OverlayManager("overlay", "overlayMessage");
+    const overlayManager = new OverlayManager(
+      elementStrings.overlayId,
+      elementStrings.overlayMessageId
+    );
     const game = new ButtonClickerGame(
       colourRandomizer,
       userPrompter,
