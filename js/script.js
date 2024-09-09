@@ -3,12 +3,18 @@ const MINIMUM_BUTTON_COUNT = 3;
 const MAXIMUM_BUTTON_COUNT = 7;
 const BUTTON_HEIGHT = 5;
 const BUTTON_WIDTH = 10;
+const BUTTON_BUFFER = 1;
+const ONE_THOUSAND_MILLISECONDS = 1000;
+const HEXADECIMAL_BASE = 16;
+const MAX_COLOR_VALUE = 16777215;
 
 import { messages } from "../../lang/messages/en/user.js";
 
 class ColourRandomizer {
   generateColour() {
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    return `#${Math.floor(Math.random() * MAX_COLOR_VALUE).toString(
+      HEXADECIMAL_BASE
+    )}`;
   }
 }
 
@@ -37,7 +43,10 @@ class GamePromptHandler {
   }
 
   isButtonCountValid(buttonCount) {
-    if ((buttonCount < MAXIMUM_BUTTON_COUNT) & (buttonCount > MINIMUM_BUTTON_COUNT)) {
+    if (
+      (buttonCount < MAXIMUM_BUTTON_COUNT) &
+      (buttonCount > MINIMUM_BUTTON_COUNT)
+    ) {
       return true;
     }
     return false;
@@ -53,11 +62,11 @@ class OverlayManager {
   showOverlay(message) {
     this.overlayMessage.innerHTML = message;
     this.overlay.classList.remove("hidden"); // Remove hidden class to show overlay
-    this.overlay.classList.add("visible");   // Optional: add visible class
+    this.overlay.classList.add("visible"); // Optional: add visible class
   }
 
   hideOverlay() {
-    this.overlay.classList.add("hidden");    // Add hidden class to hide overlay
+    this.overlay.classList.add("hidden"); // Add hidden class to hide overlay
     this.overlay.classList.remove("visible"); // Optional: remove visible class
   }
 }
@@ -68,14 +77,22 @@ class Button {
     this.buttonNumber = number;
     this.colourButton.style.position = "absolute";
     this.colourButton.style.backgroundColor = colour;
-    this.colourButton.style.height = "5em";
-    this.colourButton.style.width = "10em";
+    this.colourButton.style.height = `${BUTTON_HEIGHT}em`;
+    this.colourButton.style.width = `${BUTTON_WIDTH}em`;
     this.colourButton.textContent = number;
-    this.colourButton.style.left = `${(this.buttonNumber - 1) * 10}em`;
     this.handleClick = null;
   }
 
   display(elementName) {
+    if (this.buttonNumber == 1) {
+      this.colourButton.style.left = `${
+        (this.buttonNumber - 1) * BUTTON_WIDTH
+      }em`;
+    } else {
+      this.colourButton.style.left = `${
+        (this.buttonNumber - 1) * (BUTTON_WIDTH + BUTTON_BUFFER)
+      }em`;
+    }
     document.getElementById(elementName).appendChild(this.colourButton);
   }
 
@@ -143,7 +160,7 @@ class ButtonClickerGame {
       this.displayButtons();
       setTimeout(() => {
         this.runGame(0);
-      }, this.numberOfButtons * 1000);
+      }, this.numberOfButtons * ONE_THOUSAND_MILLISECONDS);
     }
   }
 
@@ -214,7 +231,7 @@ class ButtonClickerGame {
     if (buttonNumber == this.numberOfButtonClicks + 1) {
       this.buttons[buttonNumber - 1].revealNumber();
       this.numberOfButtonClicks++;
-  
+
       if (this.numberOfButtonClicks == this.numberOfButtons) {
         this.winGame();
       }
@@ -247,8 +264,6 @@ class ButtonClickerGame {
 }
 
 // NOTES:
-// 1) maybe pass in a buttonGenerator to the ButtonGame for generating buttons
-// instead of having the ButtonGame create it's own buttons
 //
 // 2) NO STRING LITERALS
 //
@@ -257,7 +272,6 @@ class ButtonClickerGame {
 // 4) REMOVE TEXT LIKE "GO!" from buttons, insert them from javascript if I can
 //
 // 5) A new row when the buttons are too large
-
 
 class GameInitializer {
   constructor() {
@@ -268,7 +282,11 @@ class GameInitializer {
     const colourRandomizer = new ColourRandomizer();
     const userPrompter = new GamePromptHandler();
     const overlayManager = new OverlayManager("overlay", "overlayMessage");
-    const game = new ButtonClickerGame(colourRandomizer, userPrompter, overlayManager);
+    const game = new ButtonClickerGame(
+      colourRandomizer,
+      userPrompter,
+      overlayManager
+    );
     game.initializeGame();
   }
 }
