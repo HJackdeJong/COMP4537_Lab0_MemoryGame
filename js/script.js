@@ -6,8 +6,10 @@ const BUTTON_WIDTH = 10;
 
 import { messages } from "../../lang/messages/en/user.js";
 
-function generateColour() {
-  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+class ColourRandomizer {
+  generateColour() {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  }
 }
 
 class GamePromptHandler {
@@ -114,10 +116,11 @@ class Button {
 }
 
 class ButtonClickerGame {
-  constructor(promptManager, overlayManager) {
+  constructor(colourRandomizer, promptManager, overlayManager) {
     this.buttons = [];
     this.numberOfButtons = 0;
     this.numberOfButtonClicks = 0;
+    this.colourGenerator = colourRandomizer;
     this.promptHandler = promptManager;
     this.overlayHandler = overlayManager;
   }
@@ -155,7 +158,7 @@ class ButtonClickerGame {
 
   createButtons(numberOfButtons) {
     for (let i = 0; i < numberOfButtons; i++) {
-      const colour = generateColour();
+      const colour = this.colourGenerator.generateColour();
       const newButton = new Button(colour, i + 1);
       this.buttons.push(newButton);
     }
@@ -262,9 +265,10 @@ class GameInitializer {
   }
 
   runStandardMemoryGame() {
+    const colourRandomizer = new ColourRandomizer();
     const userPrompter = new GamePromptHandler();
-    const overlayManager = new OverlayManager();
-    const game = new ButtonClickerGame(userPrompter, overlayManager);
+    const overlayManager = new OverlayManager("overlay", "overlayMessage");
+    const game = new ButtonClickerGame(colourRandomizer, userPrompter, overlayManager);
     game.initializeGame();
   }
 }
