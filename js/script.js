@@ -35,7 +35,7 @@ class GamePromptHandler {
   }
 
   isButtonCountValid(buttonCount) {
-    if ((buttonCount < 7) & (buttonCount > 3)) {
+    if ((buttonCount < MAXIMUM_BUTTON_COUNT) & (buttonCount > MINIMUM_BUTTON_COUNT)) {
       return true;
     }
     return false;
