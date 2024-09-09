@@ -1,4 +1,4 @@
-// This project was created with the assistance of ChatGPT model 3.5 
+// This project was created with the assistance of ChatGPT model 3.5
 // in editing code and providing feedback
 
 const SCRAMBLE_TIME_INTERVAL = 2000;
@@ -23,20 +23,21 @@ class ColourRandomizer {
 }
 
 class GamePromptHandler {
-  constructor() {
-    this.gamePromptContainer = document.getElementById(
-      elementStrings.buttonPromptId
-    );
-    this.gamePrompt = document.getElementById(elementStrings.buttonTextId);
-    this.userButtonsInput = document.getElementById(
-      elementStrings.numButtonsId
-    );
-    this.startButton = document.getElementById(
-      elementStrings.startGameButtonId
-    );
+  constructor(
+    buttonPromptElement,
+    buttonTextElement,
+    numButtonsElement,
+    startButtonElement,
+    promptMessage,
+    buttonText
+  ) {
+    this.gamePromptContainer = buttonPromptElement;
+    this.gamePrompt = buttonTextElement;
+    this.userButtonsInput = numButtonsElement;
+    this.startButton = startButtonElement;
 
-    this.promptMessage = messages.gamePromptMessage;
-    this.buttonText = messages.startGameButtonMessage;
+    this.promptMessage = promptMessage;
+    this.buttonText = buttonText;
   }
 
   displayPrompt() {
@@ -82,7 +83,14 @@ class OverlayManager {
 }
 
 class ButtonFactory {
-  createButtons(numberOfButtons, colourRandomizer, width, height, buffer, topOffset) {
+  createButtons(
+    numberOfButtons,
+    colourRandomizer,
+    width,
+    height,
+    buffer,
+    topOffset
+  ) {
     const buttons = [];
     for (let i = 0; i < numberOfButtons; i++) {
       const colour = colourRandomizer.generateColour();
@@ -121,17 +129,17 @@ class Button {
       window.innerWidth /
       parseFloat(getComputedStyle(document.documentElement).fontSize);
     const buttonsPerRow = Math.floor(
-      containerWidthInEm / (BUTTON_WIDTH + BUTTON_BUFFER)
+      containerWidthInEm / (this.width + this.buffer)
     );
 
     const row = Math.floor((this.buttonNumber - 1) / buttonsPerRow);
     const column = (this.buttonNumber - 1) % buttonsPerRow;
 
     this.colourButton.style.left = `${
-      column * (BUTTON_WIDTH + BUTTON_BUFFER)
+      column * (this.width + this.buffer)
     }em`;
     this.colourButton.style.top = `${
-      BUTTON_TOP_OFFSET + row * (BUTTON_HEIGHT + BUTTON_BUFFER)
+      this.topOffset + row * (this.height + this.buffer)
     }em`;
 
     document.getElementById(elementName).appendChild(this.colourButton);
@@ -174,13 +182,14 @@ class Button {
 }
 
 class ButtonClickerGame {
-  constructor(colourRandomizer, promptManager, overlayManager) {
+  constructor(colourRandomizer, promptManager, overlayManager, buttonMaker) {
     this.buttons = [];
     this.numberOfButtons = 0;
     this.numberOfButtonClicks = 0;
     this.colourGenerator = colourRandomizer;
     this.promptHandler = promptManager;
     this.overlayHandler = overlayManager;
+    this.buttonMaker = buttonMaker;
   }
 
   initializeGame() {
@@ -197,7 +206,14 @@ class ButtonClickerGame {
     if (!this.promptHandler.isButtonCountValid(this.numberOfButtons)) {
       this.overlayHandler.showOverlay(messages.wrongNumberOfButtonsMessage);
     } else {
-      this.createButtons(this.numberOfButtons);
+      this.buttons = this.buttonMaker.createButtons(
+        this.numberOfButtons,
+        this.colourGenerator,
+        BUTTON_WIDTH,
+        BUTTON_HEIGHT,
+        BUTTON_BUFFER,
+        BUTTON_TOP_OFFSET
+      );
       this.displayButtons();
       setTimeout(() => {
         this.runGame(0);
@@ -212,14 +228,6 @@ class ButtonClickerGame {
     });
     this.numberOfButtonClicks = 0;
     this.buttons.length = 0;
-  }
-
-  createButtons(numberOfButtons) {
-    for (let i = 0; i < numberOfButtons; i++) {
-      const colour = this.colourGenerator.generateColour();
-      const newButton = new Button(colour, i + 1);
-      this.buttons.push(newButton);
-    }
   }
 
   displayButtons() {
@@ -307,20 +315,38 @@ class ButtonClickerGame {
 class GameInitializer {
   runStandardMemoryGame() {
     const colourRandomizer = new ColourRandomizer();
-    const userPrompter = new GamePromptHandler();
+
+    const buttonPromptElement = document.getElementById(elementStrings.buttonPromptId);
+    const buttonTextElement = document.getElementById(elementStrings.buttonTextId);
+    const numButtonsElement = document.getElementById(elementStrings.numButtonsId);
+    const startButtonElement = document.getElementById(elementStrings.startGameButtonId);
+
+    const userPrompter = new GamePromptHandler(
+      buttonPromptElement,
+      buttonTextElement,
+      numButtonsElement,
+      startButtonElement,
+      messages.gamePromptMessage,
+      messages.startGameButtonMessage
+    );
+
     const overlayManager = new OverlayManager(
       elementStrings.overlayId,
       elementStrings.overlayMessageId
     );
+
+    const buttonCreator = new ButtonFactory();
+
     const game = new ButtonClickerGame(
       colourRandomizer,
       userPrompter,
-      overlayManager
+      overlayManager,
+      buttonCreator
     );
     game.initializeGame();
   }
 }
 
-//the code to run the game
+//the code to run the initializer for the game
 const gameInitializer = new GameInitializer();
 gameInitializer.runStandardMemoryGame();
