@@ -12,7 +12,8 @@ const ONE_THOUSAND_MILLISECONDS = 1000;
 const HEXADECIMAL_BASE = 16;
 const MAX_COLOR_VALUE = 16777215;
 
-import { messages, elementStrings } from "../../lang/messages/en/user.js";
+import { messages, elementStrings } from "/COMP4537/labs/0/lang/messages/en/user.js";
+
 
 class ColourRandomizer {
   generateColour() {

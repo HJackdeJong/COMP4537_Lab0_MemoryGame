@@ -14,9 +14,9 @@
 }
 
 .hidden {
-    display: none; /* Use only for hiding */
+    display: none;
 }
 
 .visible {
-    display: block; /* Use for showing the overlay */
+    display: block;
 }
