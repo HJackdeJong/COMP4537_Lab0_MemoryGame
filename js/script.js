@@ -95,6 +95,24 @@ class Button {
   }
 }
 
+class OverlayManager {
+  constructor(overlayId, overlayMessageId) {
+    this.overlay = document.getElementById(overlayId);
+    this.overlayMessage = document.getElementById(overlayMessageId);
+  }
+
+  showOverlay(message) {
+    this.overlayMessage.innerHTML = message;
+    this.overlay.classList.remove("hidden"); // Remove hidden class to show overlay
+    this.overlay.classList.add("visible");   // Optional: add visible class
+  }
+
+  hideOverlay() {
+    this.overlay.classList.add("hidden");    // Add hidden class to hide overlay
+    this.overlay.classList.remove("visible"); // Optional: remove visible class
+  }
+}
+
 class ButtonClickerGame {
   constructor(handler) {
     this.buttons = [];
@@ -236,13 +254,23 @@ class ButtonClickerGame {
 //
 // 5) A new row when the buttons are too large
 
-//script code to start the game with dependency injection
 
-const userPrompter = new GamePromptHandler();
-// const colourizer = new ColourGenerator();
-// const buttonCreator = new ButtonGenerator();
-const game = new ButtonClickerGame(userPrompter);
-game.initializeGame();
+class GameInitializer {
+  constructor() {
+    // You can initialize any default configurations here if needed
+  }
+
+  runStandardMemoryGame() {
+    const userPrompter = new GamePromptHandler();
+    const game = new ButtonClickerGame(userPrompter);
+    game.initializeGame();
+  }
+}
+
+//the code to run the game
+const gameInitializer = new GameInitializer();
+gameInitializer.runStandardMemoryGame();
+
 
 function showOverlay(message) {
   const overlay = document.getElementById("overlay");
