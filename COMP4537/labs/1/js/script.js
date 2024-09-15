@@ -17,6 +17,7 @@ class Note {
     noteContainer.appendChild(textarea);
 
     const removeButton = document.createElement("button");
+    removeButton.setAttribute("id", "removeNote");
     removeButton.textContent = MESSAGES.removeNoteButton;
     removeButton.addEventListener("click", () => onRemoveCallback(index));
     noteContainer.appendChild(removeButton);
@@ -53,7 +54,8 @@ class NoteManager {
   }
 
   getNotes() {
-    return this.notes;
+    const savedNotes = JSON.parse(localStorage.getItem(this.storageKey)) || [];
+    return savedNotes.map((noteContent) => new Note(noteContent)); // Ensure latest notes are loaded
   }
 }
 
@@ -77,7 +79,8 @@ class UIManager {
 
   // Init Writer UI
   initWriterUI() {
-    document.getElementById('writerHeader').textContent = MESSAGES.writerPageTitle;
+    document.getElementById("writerHeader").textContent =
+      MESSAGES.writerPageTitle;
     this.addButton.textContent = MESSAGES.addNoteButton;
     this.addButton.addEventListener("click", () => this.addNewNote());
 
@@ -91,7 +94,8 @@ class UIManager {
 
   // Init Reader UI
   initReaderUI() {
-    document.getElementById('readerHeader').textContent = MESSAGES.readerPageTitle;
+    document.getElementById("readerHeader").textContent =
+      MESSAGES.readerPageTitle;
 
     const renderNotes = () => {
       this.notesContainer.innerHTML = "";
@@ -108,6 +112,14 @@ class UIManager {
     renderNotes();
 
     setInterval(renderNotes, 2000);
+
+    // Listen to the storage event for updates from other tabs (writer page)
+    window.addEventListener("storage", (e) => {
+      if (e.key === "notes") {
+        console.log("Notes updated");
+        renderNotes(); // Re-render notes if localStorage "notes" is updated
+      }
+    });
 
     this.backButton.textContent = MESSAGES.backButton;
     this.backButton.addEventListener("click", () => {
@@ -179,7 +191,8 @@ class Initializer {
   initReaderPage() {
     const noteManager = new NoteManager("notes");
     const uiManager = new UIManager(noteManager);
-    document.getElementById('writerHeader').textContent = MESSAGES.writerPageTitle;
+    document.getElementById("readerHeader").textContent =
+      MESSAGES.readerPageTitle;
     uiManager.initReaderUI();
   }
 

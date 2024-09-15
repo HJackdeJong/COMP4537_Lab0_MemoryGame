@@ -4,6 +4,6 @@ export const MESSAGES = {
     readerPageTitle: "Note Reading Page",
     addNoteButton: "Add",
     removeNoteButton: "Remove",
-    backButton: "returnToIndex",
+    backButton: "Back",
     lastSavedPrefix: "Last saved at: "
 };
