@@ -1,5 +1,5 @@
 
-import { MESSAGES } from "/COMP4357/labs/1/lang/messages/en/user.js"
+import { MESSAGES } from "../lang/messages/en/user.js"
 
 
 class Note {
@@ -146,6 +146,8 @@ class Initializer {
             this.initWriterPage();
         } else if (pageTitle === "Reader Page") {
             this.initReaderPage();
+        } else if (pageTitle === "Lab1:Index") {
+            this.initIndexPage();
         }
     }
 
@@ -166,6 +168,20 @@ class Initializer {
         const uiManager = new UIManager(noteManager);
         uiManager.initReaderUI();
     }
+
+        initIndexPage() {
+            document.getElementById('titleText').textContent = MESSAGES.pageTitle;  
+            document.getElementById('nameText').textContent = "Harrison de Jong";  
+            document.getElementById('promptText').textContent = "Choose an option:";
+    
+            const writerAnchor = document.getElementById('writerAnchor');
+            writerAnchor.textContent = "Go to Writer Page";
+            writerAnchor.href = "writer.html";
+    
+            const readerAnchor = document.querySelector('.readerAnchor');
+            readerAnchor.textContent = "Go to Reader Page";
+            readerAnchor.href = "reader.html";
+        }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

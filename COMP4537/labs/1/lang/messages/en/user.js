@@ -1,4 +1,4 @@
-const MESSAGES = {
+export const MESSAGES = {
     pageTitle: "Writer Page",
     addNoteButton: "Add Note",
     removeNoteButton: "Remove",
