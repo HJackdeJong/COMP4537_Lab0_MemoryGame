@@ -1,7 +1,7 @@
 export const MESSAGES = {
     pageTitle: "Lab1:Index",
-    addNoteButton: "Add Note",
+    addNoteButton: "Add",
     removeNoteButton: "Remove",
-    backButton: "Back to Index",
+    backButton: "returnToIndex",
     lastSavedPrefix: "Last saved at: "
 };
