@@ -5,24 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Lab1:Index</title>
+    <title>Writer Page</title>
 </head>
 
 <body>
-    <header>
-        <h1 id="titleText"></h1>
-        <p id="nameText"></p>
-    </header>
+    <h1 id="writerHeader"></h1>
 
     <main>
-        <h2 id="promptText"></h2>
-        <div>
-            <a href="writer.html" id="writerAnchor"></a>
-        </div>
-        <div>
-            <a href="reader.html" class="readerAnchor"></a>
+        <div id="writerArea">
+            <h2 id="lastStoredTime"></h2>
+            <div id="notesWriting">
+            </div>
+            <button id="addButton">
+            </button>
         </div>
     </main>
+
+    <footer>
+        <button id="backButton"></button>
+
+    </footer>
 
     <script type="module" src="js/script.js"></script>
 </body>
