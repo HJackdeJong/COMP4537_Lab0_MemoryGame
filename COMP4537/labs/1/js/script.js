@@ -1,4 +1,4 @@
-import { MESSAGES, ELEMENT_IDS, PAGE_TITLES, URLS } from "../lang/messages/en/user.js";
+import { MESSAGES, ELEMENT_IDS, PAGE_TITLES, URLS } from "/COMP4537/labs/1/lang/messages/en/user.js";
 
 class Note {
   constructor(content = "") {
