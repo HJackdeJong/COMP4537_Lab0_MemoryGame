@@ -5,8 +5,10 @@ export const MESSAGES = {
     addNoteButton: "Add",
     removeNoteButton: "Remove",
     backButton: "Back",
-    lastSavedPrefix: "Last saved at: "
+    lastSavedPrefix: "Last saved at: ",
+    lastUpdatedPrefix: "Last updated at: "
 };
+
 
 export const ELEMENT_IDS = {
     writerNoteDisplay: "writerNoteDisplay",
@@ -35,3 +37,10 @@ export const ELEMENT_IDS = {
     writer: "writer.html",
     reader: "reader.html",
   };
+
+  export const INDEX_CONTENT = {
+    creatorName: "Harrison de Jong",
+    pagePrompt: "Choose an option:",
+    writePagePrompt: "Go to Writer Page",
+    readPagePrompt: "Go to Reader Page"
+  }
