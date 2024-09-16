@@ -1,4 +1,4 @@
-import { MESSAGES } from "../lang/messages/en/user.js";
+import { MESSAGES, ELEMENT_IDS, PAGE_TITLES, URLS } from "../lang/messages/en/user.js";
 
 class Note {
   constructor(content = "") {
@@ -17,7 +17,7 @@ class Note {
     noteContainer.appendChild(textarea);
 
     const removeButton = document.createElement("button");
-    removeButton.setAttribute("id", "removeNote");
+    removeButton.setAttribute("id", ELEMENT_IDS.removeNote);
     removeButton.textContent = MESSAGES.removeNoteButton;
     removeButton.addEventListener("click", () => onRemoveCallback(index));
     noteContainer.appendChild(removeButton);
@@ -54,8 +54,7 @@ class NoteManager {
   }
 
   getNotes() {
-    const savedNotes = JSON.parse(localStorage.getItem(this.storageKey)) || [];
-    return savedNotes.map((noteContent) => new Note(noteContent)); // Ensure latest notes are loaded
+    return this.notes;
   }
 }
 
@@ -65,43 +64,43 @@ class UIManager {
 
     // Handle note container initialization based on the page
     const pageTitle = document.title;
-    if (pageTitle === "Writer Page") {
-      this.notesContainer = document.getElementById("writerNoteDisplay");
-      this.lastStoredTimeElement = document.getElementById("lastStoredTime");
-      this.addButton = document.getElementById("addNote");
-      this.backButton = document.getElementById("returnToIndex");
-    } else if (pageTitle === "Reader Page") {
-      this.notesContainer = document.getElementById("readerNoteDisplay");
-      this.lastUpdatedElement = document.getElementById("lastUpdatedTime");
-      this.backButton = document.getElementById("returnToIndex");
+    if (pageTitle === PAGE_TITLES.writer) {
+      this.notesContainer = document.getElementById(ELEMENT_IDS.writerNoteDisplay);
+      this.lastStoredTimeElement = document.getElementById(ELEMENT_IDS.lastStoredTime);
+      this.addButton = document.getElementById(ELEMENT_IDS.addNote);
+      this.backButton = document.getElementById(ELEMENT_IDS.returnToIndex);
+    } else if (pageTitle === PAGE_TITLES.reader) {
+      this.notesContainer = document.getElementById(ELEMENT_IDS.readerNoteDisplay);
+      this.lastUpdatedElement = document.getElementById(ELEMENT_IDS.lastUpdatedTime);
+      this.backButton = document.getElementById(ELEMENT_IDS.returnToIndex);
     }
   }
 
-  // Init Writer UI
   initWriterUI() {
-    document.getElementById("writerHeader").textContent =
-      MESSAGES.writerPageTitle;
+    document.getElementById(ELEMENT_IDS.writerHeader).textContent = MESSAGES.writerPageTitle;
     this.addButton.textContent = MESSAGES.addNoteButton;
     this.addButton.addEventListener("click", () => this.addNewNote());
 
     this.backButton.textContent = MESSAGES.backButton;
     this.backButton.addEventListener("click", () => {
-      window.location.href = "index.html";
+      window.location.href = URLS.index;
     });
 
-    this.renderNotes();
+    this.renderWriterNotes();
   }
 
-  // Init Reader UI
   initReaderUI() {
-    document.getElementById("readerHeader").textContent =
-      MESSAGES.readerPageTitle;
+    document.getElementById(ELEMENT_IDS.readerHeader).textContent = MESSAGES.readerPageTitle;
 
-    const renderNotes = () => {
+    const renderReaderNotes = () => {
       this.notesContainer.innerHTML = "";
-      this.noteManager.getNotes().forEach((note) => {
+      this.noteManager.notes = this.noteManager.loadNotesFromStorage();
+
+      const notes = this.noteManager.getNotes();
+
+      notes.forEach((note) => {
         const noteElement = document.createElement("p");
-        noteElement.textContent = note.content; // Display as plain text in reader
+        noteElement.textContent = note.content;
         this.notesContainer.appendChild(noteElement);
       });
 
@@ -109,34 +108,28 @@ class UIManager {
       this.lastUpdatedElement.textContent = `Last updated at: ${now}`;
     };
 
-    renderNotes();
+    renderReaderNotes();
 
-    setInterval(renderNotes, 2000);
+    setInterval(renderReaderNotes, 2000);
 
-    // Listen to the storage event for updates from other tabs (writer page)
     window.addEventListener("storage", (e) => {
       if (e.key === "notes") {
-        console.log("Notes updated");
-        renderNotes(); // Re-render notes if localStorage "notes" is updated
+        renderReaderNotes();
       }
     });
 
     this.backButton.textContent = MESSAGES.backButton;
     this.backButton.addEventListener("click", () => {
-      window.location.href = "index.html";
+      window.location.href = URLS.index;
     });
   }
 
-  // Render notes for Writer Page
-  renderNotes() {
+  renderWriterNotes() {
     this.notesContainer.innerHTML = "";
 
     const notes = this.noteManager.getNotes();
     notes.forEach((note, index) => {
-      const noteElement = note.createNoteElement(
-        index,
-        this.removeNote.bind(this)
-      );
+      const noteElement = note.createNoteElement(index, this.removeNote.bind(this));
       this.notesContainer.appendChild(noteElement);
     });
 
@@ -145,12 +138,12 @@ class UIManager {
 
   addNewNote() {
     this.noteManager.addNote();
-    this.renderNotes();
+    this.renderWriterNotes();
   }
 
   removeNote(index) {
     this.noteManager.removeNoteAt(index);
-    this.renderNotes();
+    this.renderWriterNotes();
   }
 
   updateLastStoredTime() {
@@ -167,11 +160,11 @@ class Initializer {
   init() {
     const pageTitle = document.title;
 
-    if (pageTitle === "Writer Page") {
+    if (pageTitle === PAGE_TITLES.writer) {
       this.initWriterPage();
-    } else if (pageTitle === "Reader Page") {
+    } else if (pageTitle === PAGE_TITLES.reader) {
       this.initReaderPage();
-    } else if (pageTitle === "Lab1:Index") {
+    } else if (pageTitle === PAGE_TITLES.index) {
       this.initIndexPage();
     }
   }
@@ -191,23 +184,22 @@ class Initializer {
   initReaderPage() {
     const noteManager = new NoteManager("notes");
     const uiManager = new UIManager(noteManager);
-    document.getElementById("readerHeader").textContent =
-      MESSAGES.readerPageTitle;
+    document.getElementById(ELEMENT_IDS.readerHeader).textContent = MESSAGES.readerPageTitle;
     uiManager.initReaderUI();
   }
 
   initIndexPage() {
-    document.getElementById("titleText").textContent = MESSAGES.pageTitle;
-    document.getElementById("nameText").textContent = "Harrison de Jong";
-    document.getElementById("promptText").textContent = "Choose an option:";
+    document.getElementById(ELEMENT_IDS.titleText).textContent = MESSAGES.pageTitle;
+    document.getElementById(ELEMENT_IDS.nameText).textContent = "Harrison de Jong";
+    document.getElementById(ELEMENT_IDS.promptText).textContent = "Choose an option:";
 
-    const writerAnchor = document.getElementById("writerAnchor");
+    const writerAnchor = document.getElementById(ELEMENT_IDS.writerAnchor);
     writerAnchor.textContent = "Go to Writer Page";
-    writerAnchor.href = "writer.html";
+    writerAnchor.href = URLS.writer;
 
-    const readerAnchor = document.querySelector(".readerAnchor");
+    const readerAnchor = document.querySelector(ELEMENT_IDS.readerAnchor);
     readerAnchor.textContent = "Go to Reader Page";
-    readerAnchor.href = "reader.html";
+    readerAnchor.href = URLS.reader;
   }
 }
 
