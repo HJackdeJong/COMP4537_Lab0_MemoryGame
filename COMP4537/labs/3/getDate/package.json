@@ -1,0 +1,11 @@
+{
+  "name": "part_b",
+  "version": "1.0.0",
+  "description": "a project to make a server-side nodejs servervice to get the name we send via the the browser's address bar, greet us and return the current time of the server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Harrison de Jong",
+  "license": "UNLICENSED"
+}

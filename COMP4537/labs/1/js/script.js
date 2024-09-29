@@ -1,3 +1,5 @@
+//Code was edited with the assistance of ChatGPT 3.5
+
 import { MESSAGES, ELEMENT_IDS, PAGE_TITLES, URLS, INDEX_CONTENT } from "/COMP4537/labs/1/lang/messages/en/user.js";
 
 class Note {
@@ -42,7 +44,7 @@ class NoteManager {
 
   loadNotesFromStorage() {
     const savedNotes = JSON.parse(localStorage.getItem(this.storageKey)) || [];
-    return savedNotes.map((noteContent) => new Note(noteContent));
+    return savedNotes.map((noteContent) => new Note(noteContent));  
   }
 
   saveNotesToStorage() {
