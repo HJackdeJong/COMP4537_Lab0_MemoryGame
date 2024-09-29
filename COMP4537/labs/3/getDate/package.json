@@ -1,11 +1,20 @@
 {
-  "name": "part_b",
+  "name": "getdate",
   "version": "1.0.0",
-  "description": "a project to make a server-side nodejs servervice to get the name we send via the the browser's address bar, greet us and return the current time of the server",
-  "main": "index.js",
+  "description": " A simple Node.js server to return the date and greet the user",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HJackdeJong/COMP4537_Lab0_MemoryGame.git"
   },
   "author": "Harrison de Jong",
-  "license": "UNLICENSED"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HJackdeJong/COMP4537_Lab0_MemoryGame/issues"
+  },
+  "homepage": "https://github.com/HJackdeJong/COMP4537_Lab0_MemoryGame#readme"
 }
